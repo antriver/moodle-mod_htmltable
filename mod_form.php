@@ -15,8 +15,12 @@ require_once($CFG->dirroot.'/mod/htmltable/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
 class mod_htmltable_mod_form extends moodleform_mod {
-    function definition() {
-        global $CFG, $DB;
+
+    function definition()
+    {
+        global $CFG, $DB, $PAGE;
+
+        $PAGE->requires->jquery();
 
         $mform = $this->_form;
 
@@ -38,208 +42,70 @@ class mod_htmltable_mod_form extends moodleform_mod {
         $mform->addElement('header', 'contentsection', get_string('contentheader', 'htmltable'));
         $mform->setExpanded('contentsection');
 
-/*$tableEditButtons = '<div id="htmltable_edittable_buttons">
-		<a href="#" class="htmltable_addrow_button"><button><i class="icon-th-list"></i> Add another row</button></a>
-		<a href="#" class="htmltable_addcol_button"><button><i class="icon-th"></i> Add another column</button></a>
-	</div>';        */
+        // Editing an existing table?
+        if ($this->current && property_exists($this->current, 'content') && !is_null($this->current->content)) {
+        	// The previous data is saved in JSON format so set it as a JS variable
+        	$tableHTML = '<script> var currentTable = ' . $this->current->content . '; </script>';
+        } else {
+            $tableHTML = '<script> var currentTable; </script>';
+        }
 
-$tableHTML = '<script>
-	var currentTable;
-</script>';
-
-
-//Editing an existing table?
-if ( $this->current && !is_null($this->current->content) )
-{
-	//It's already in JSON format so set it as a JS variable
-	echo '<script>
-		var currentTable = '.$this->current->content.';
-	</script>';
-}
-
-$tableHTML .= <<<EOT
-
-	<table class="userinfotable" id="htmltable_edittable">
-		<tr class="addrow"><td style="text-align:center;"><a href="#" class="htmltable_addrow_button"><button><i class="icon-plus"></i> Add A Row</button></a></td></tr>
-	</table>
-
-	<script>
-
-		var htmltable_titleinput = '<input type="text" placeholder="Title" tabindex="1" />';
-		var htmltable_datainput =  '<input type="text" placeholder="Data"  tabindex="1" />';
-		var htmltable_removecol_button = '<a href="#" class="htmltable_removecol_button" title="Remove Column"><button><i class="icon-minus"></i></button></a><br/>';
-
-		var htmltable_cols = currentTable ? currentTable[0].length : 2;
-		var htmltable_initial_rows = currentTable ? currentTable.length-1 : 1;
-
-		function htmltable_addcol()
-		{
-			++htmltable_cols;
-
-			$('#htmltable_edittable tr:not(".addrow")').each(function()
-			{
-				if ( $(this).hasClass('header') )
-				{
-					$(this).children('th').last().before('<th>'+htmltable_removecol_button+htmltable_titleinput+'</th>');
-				}
-				else
-				{
-					$(this).children('td').last().before('<td>'+htmltable_datainput+'</td>');
-				}
-			});
-
-			return false;
-		}
-
-
-		function htmltable_addheader()
-		{
-			var tr = '<tr class="header">';
-				for ( var i = 0 ; i < htmltable_cols ; ++i )
-				{
-					tr += '<th style="height:70px;">';
-						if ( i >= 2 )
-						{
-							tr += htmltable_removecol_button;
-						}
-						tr += htmltable_titleinput;
-					tr += '</th>';
-				}
-				tr += '<th class="addcol" style="width:32px;"><a href="#" class="htmltable_addcol_button" title="Add A Column"><button><i class="icon-plus"></i></button></a></th>';
-			tr += '</tr>';
-
-			$('#htmltable_edittable tr.addrow').before(tr);
-
-			return false;
-		}
-
-		function htmltable_addrow()
-		{
-			var tr = '<tr class="data">';
-			for ( var i = 0 ; i < htmltable_cols ; ++i )
-			{
-				if ( i == 0 )
-				{
-					tr += '<td><a href="#" class="htmltable_removerow_button" title="Remove Row"><button><i class="icon-minus"></i></button></a>'+htmltable_datainput+'</td>';
-				}
-				else
-				{
-					tr += '<td>'+htmltable_datainput+'</td>';
-				}
-			}
-
-			tr += '<td style="width:32px;">&nbsp;</td>';
-
-			tr += '</tr>';
-
-			$('#htmltable_edittable tr.addrow').before(tr);
-
-			return false;
-		}
-
-		$(document).on('click','.htmltable_addcol_button',htmltable_addcol);
-		$(document).on('click','.htmltable_addrow_button',htmltable_addrow);
-
-		//Remove row
-		$(document).on('click','.htmltable_removerow_button',function()
-		{
-			$(this).closest('tr').remove();
-			return false;
-		});
-
-		//Remove column
-		$(document).on('click','.htmltable_removecol_button',function()
-		{
-			var index = $(this).closest('th').index() +1;
-
-			$('#htmltable_edittable tr').each(function()
-			{
-				$(this).children('th:nth-child('+index+'), td:nth-child('+index+')').remove();
-			});
-
-			return false;
-		});
-
-		//Add htmltable_initial_rows rows by default
-		htmltable_addheader();
-		for ( var i = 0 ; i < htmltable_initial_rows ; ++i )
-		{
-			htmltable_addrow();
-		}
-
-		function htmltable_export()
-		{
-			var table = [];
-			$('#htmltable_edittable tr:not(.addrow)').each(function()
-			{
-				var row = [];
-				$(this).find('input').each(function()
-				{
-					row.push( $(this).val() );
-				});
-				table.push(row);
-			});
-			return table;
-		}
-
-		//When submitting the form, put the table data into a field
-		$(document).on('submit','#mform1',function()
-		{
-			var table = htmltable_export();
-			table = JSON.stringify(table);
-			$('input[name=content]').val(table);
-		});
-
-		//Populate table with existing content
-		if ( currentTable )
-		{
-			$('#htmltable_edittable tr:not(.addrow)').each(function(rowNum)
-			{
-				var row = currentTable[rowNum];
-
-				$(this).find('th input, td input').each(function(colNum)
-				{
-					$(this).val( row[colNum] );
-				});
-			});
-		}
-
-	</script>
-
+        // Table header row (with add column button)
+        $tableHTML .= <<<EOT
+        	<table class="userinfotable table table-striped" id="htmltable_edittable">
+        		<tr class="addrow"><td style="text-align:center;"><a href="#" class="htmltable_addrow_button"><button><i class="icon-plus"></i> Add A Row</button></a></td></tr>
+        	</table>
+        	<script src="/mod/htmltable/js/htmltable.js"></script>
 EOT;
 
 	 	$mform->addElement('hidden', 'content' , '');
+        $mform->setType('content', PARAM_RAW);
+
 	 	$mform->addElement('hidden', 'contentformat' , '1');
+        $mform->setType('contentformat', PARAM_RAW);
+
         $mform->addElement('html',$tableHTML);
 
-        $mform->addElement('html','<br/><div class="generalbox inset"><h4 class="advice"><i class="icon-lightbulb"></i> <strong>Tip:</strong> you can style your text like this:</h4>
-        <table class="styledtable">
-        	<tr>
-        		<th>Style</td>
-        		<th>Type This</td>
-        		<th>To Get This</td>
-        	</tr>
-        	<tr>
-        		<td style="width:140px;">Bold</td>
-        		<td>**bold**</td>
-        		<td style="width:200px;"><strong>bold</strong></td>
-        	</tr>
-        	<tr>
-        		<td>Italic</td>
-        		<td>*italic*</td>
-        		<td><em>italic</em></td>
-        	</tr>
-        	<tr>
-        		<td>Links (With your own text)</td>
-        		<td>[Text you want to appear](http://www.website-you-want-to-link-to.com)</td>
-        		<td><a href="http://www.website-you-want-to-link-to.com">Text you want to appear</a></td>
-        	</tr>
-        	<tr>
-        		<td>Links (Showing URL)</td>
-        		<td>&lt;http://www.google.com&gt;</td>
-        		<td><a href="http://www.google.com">http://www.google.com</a></td>
-        	</tr>
-        </table>
+        $mform->addElement('html','
+        <br/>
+        <div class="generalbox inset">
+
+            <h4 class="advice">
+                <i class="fa fa-lightbulb-o"></i> Tip: You can style your text like this:
+            </h4>
+
+            <table class="table table-striped">
+                <thead>
+                	<tr>
+                		<th>Style</td>
+                		<th>Type This</td>
+                		<th>To Get This</td>
+                	</tr>
+                </thead>
+                <tbody>
+                	<tr>
+                		<td style="width:140px;">Bold</td>
+                		<td>**bold**</td>
+                		<td style="width:200px;"><strong>bold</strong></td>
+                	</tr>
+                	<tr>
+                		<td>Italic</td>
+                		<td>*italic*</td>
+                		<td><em>italic</em></td>
+                	</tr>
+                	<tr>
+                		<td>Links (With your own text)</td>
+                		<td>[Text you want to appear](http://www.website-you-want-to-link-to.com)</td>
+                		<td><a href="http://www.website-you-want-to-link-to.com">Text you want to appear</a></td>
+                	</tr>
+                	<tr>
+                		<td>Links (Showing URL)</td>
+                		<td>&lt;http://www.google.com&gt;</td>
+                		<td><a href="http://www.google.com">http://www.google.com</a></td>
+                	</tr>
+                </tbody>
+            </table>
+
         </div>');
 
         //-------------------------------------------------------

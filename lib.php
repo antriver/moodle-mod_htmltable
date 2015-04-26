@@ -520,7 +520,7 @@ function htmltable_display_table($content)
 
 	require_once $CFG->dirroot.'/lib/markdown.php';
 
-	//Add table content to arrays to display
+	// Add table content to arrays to display
 	$head = array();
 	$data = array();
 
@@ -543,7 +543,7 @@ function htmltable_display_table($content)
 	}
 
 	$table = new html_table();
-    $table->attributes['class'] = 'userinfotable htmltable';
+    $table->attributes['class'] = 'userinfotable htmltable table table-striped';
     $table->head = $head;
     $table->width = '100%';
     $table->data = $data;
