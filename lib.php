@@ -121,8 +121,7 @@ function htmltable_update_instance($data, $mform) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
-    $cmid        = $data->coursemodule;
-    $draftitemid = $data->page['itemid'];
+    $cmid = $data->coursemodule;
 
     $data->timemodified = time();
     $data->id           = $data->instance;
@@ -137,19 +136,7 @@ function htmltable_update_instance($data, $mform) {
     $displayoptions['printintro']   = $data->printintro;
     $data->displayoptions = serialize($displayoptions);
 
-/*    $data->content       = $data->page['text'];
-    $data->contentformat = $data->page['format']; */
-
     $DB->update_record('htmltable', $data);
-
-    $context = context_module::instance($cmid);
-    if ($draftitemid) {
-        $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_htmltable', 'content', 0, htmltable_get_editor_options($context), $data->content);
-        $DB->update_record('htmltable', $data);
-    }
-
-   	$cache = htmltable_get_cache();
-   	$cache->delete('instance'.$data->instance);
 
     return true;
 }
@@ -518,7 +505,7 @@ function htmltable_display_table($content)
 	global $CFG;
 	$content = json_decode($content);
 
-	require_once $CFG->dirroot.'/lib/markdown.php';
+	#require_once $CFG->dirroot.'/lib/markdown/Markdown.php';
 
 	// Add table content to arrays to display
 	$head = array();
@@ -529,7 +516,7 @@ function htmltable_display_table($content)
 		foreach ( $row as &$col )
 		{
 			if ( !$col ) { $col = '&nbsp;'; }
-			$col = Markdown($col);
+			$col = markdown_to_html($col);
 		}
 
 		if ( $i == 0 )

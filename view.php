@@ -35,8 +35,6 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/htmltable:view', $context);
 
-add_to_log($course->id, 'htmltable', 'view', 'view.php?id='.$cm->id, $page->id, $cm->id);
-
 // Update 'viewed' state if required by completion system
 require_once($CFG->libdir . '/completionlib.php');
 $completion = new completion_info($course);
