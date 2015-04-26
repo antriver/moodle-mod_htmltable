@@ -20,7 +20,9 @@ class mod_htmltable_mod_form extends moodleform_mod {
     {
         global $CFG, $DB, $PAGE;
 
+        $PAGE->requires->css('/mod/htmltable/css/htmltable.css');
         $PAGE->requires->jquery();
+        $PAGE->requires->js('/mod/htmltable/js/htmltable.js');
 
         $mform = $this->_form;
 
@@ -44,24 +46,33 @@ class mod_htmltable_mod_form extends moodleform_mod {
 
         // Editing an existing table?
         if ($this->current && property_exists($this->current, 'content') && !is_null($this->current->content)) {
-        	// The previous data is saved in JSON format so set it as a JS variable
-        	$tableHTML = '<script> var currentTable = ' . $this->current->content . '; </script>';
+            // The previous data is saved in JSON format so set it as a JS variable
+            $tableHTML = '<script> var currentTable = ' . $this->current->content . '; </script>';
         } else {
             $tableHTML = '<script> var currentTable; </script>';
         }
 
         // Table header row (with add column button)
         $tableHTML .= <<<EOT
-        	<table class="userinfotable table table-striped" id="htmltable_edittable">
-        		<tr class="addrow"><td style="text-align:center;"><a href="#" class="htmltable_addrow_button"><button><i class="icon-plus"></i> Add A Row</button></a></td></tr>
-        	</table>
-        	<script src="/mod/htmltable/js/htmltable.js"></script>
+            <table class="htmltable table table-striped" id="htmltable_edittable">
+                <thead>
+
+                </thead>
+                <tbody>
+
+                </tbody>
+                <tfoot>
+                    <tr class="addrow">
+                        <td colspan="4"><a href="#" class="htmltable_addrow_button"><button><i class="fa fa-plus"></i> Add A Row</button></a></td>
+                    </tr>
+                </tfoot>
+            </table>
 EOT;
 
-	 	$mform->addElement('hidden', 'content' , '');
+        $mform->addElement('hidden', 'content' , '');
         $mform->setType('content', PARAM_RAW);
 
-	 	$mform->addElement('hidden', 'contentformat' , '1');
+        $mform->addElement('hidden', 'contentformat' , '1');
         $mform->setType('contentformat', PARAM_RAW);
 
         $mform->addElement('html',$tableHTML);
@@ -76,33 +87,33 @@ EOT;
 
             <table class="table table-striped">
                 <thead>
-                	<tr>
-                		<th>Style</td>
-                		<th>Type This</td>
-                		<th>To Get This</td>
-                	</tr>
+                    <tr>
+                        <th>Style</td>
+                        <th>Type This</td>
+                        <th>To Get This</td>
+                    </tr>
                 </thead>
                 <tbody>
-                	<tr>
-                		<td style="width:140px;">Bold</td>
-                		<td>**bold**</td>
-                		<td style="width:200px;"><strong>bold</strong></td>
-                	</tr>
-                	<tr>
-                		<td>Italic</td>
-                		<td>*italic*</td>
-                		<td><em>italic</em></td>
-                	</tr>
-                	<tr>
-                		<td>Links (With your own text)</td>
-                		<td>[Text you want to appear](http://www.website-you-want-to-link-to.com)</td>
-                		<td><a href="http://www.website-you-want-to-link-to.com">Text you want to appear</a></td>
-                	</tr>
-                	<tr>
-                		<td>Links (Showing URL)</td>
-                		<td>&lt;http://www.google.com&gt;</td>
-                		<td><a href="http://www.google.com">http://www.google.com</a></td>
-                	</tr>
+                    <tr>
+                        <td style="width:140px;">Bold</td>
+                        <td>**bold**</td>
+                        <td style="width:200px;"><strong>bold</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Italic</td>
+                        <td>*italic*</td>
+                        <td><em>italic</em></td>
+                    </tr>
+                    <tr>
+                        <td>Links (With your own text)</td>
+                        <td>[Text you want to appear](http://www.website-you-want-to-link-to.com)</td>
+                        <td><a href="http://www.website-you-want-to-link-to.com">Text you want to appear</a></td>
+                    </tr>
+                    <tr>
+                        <td>Links (Showing URL)</td>
+                        <td>&lt;http://www.google.com&gt;</td>
+                        <td><a href="http://www.google.com">http://www.google.com</a></td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -120,16 +131,16 @@ EOT;
         //Change display options to user friendly labels
         foreach ( $options as &$option )
         {
-        	switch ( $option )
-        	{
-        		case 'Embed':
-        			$option = 'Show on course page';
-        		break;
+            switch ( $option )
+            {
+                case 'Embed':
+                    $option = 'Show on course page';
+                break;
 
-        		case 'Open':
-        			$option = 'Click to view';
-        		break;
-        	}
+                case 'Open':
+                    $option = 'Click to view';
+                break;
+            }
         }
 
         if (count($options) == 1) {

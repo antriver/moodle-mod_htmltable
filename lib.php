@@ -543,7 +543,7 @@ function htmltable_display_table($content)
 	}
 
 	$table = new html_table();
-    $table->attributes['class'] = 'userinfotable htmltable table table-striped';
+    $table->attributes['class'] = 'htmltable table table-striped';
     $table->head = $head;
     $table->width = '100%';
     $table->data = $data;
