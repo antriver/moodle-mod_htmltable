@@ -18,7 +18,7 @@ if ($ADMIN->fulltree) {
 
     //--- general settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_configcheckbox('htmltable/requiremodintro',
-        get_string('requiremodintro', 'admin'), get_string('configrequiremodintro', 'admin'), 1));
+        get_string('requiremodintro', 'admin'), get_string('configrequiremodintro', 'htmltable'), 1));
     $settings->add(new admin_setting_configmultiselect('htmltable/displayoptions',
         get_string('displayoptions', 'htmltable'), get_string('configdisplayoptions', 'htmltable'),
         $defaultdisplayoptions, $displayoptions));

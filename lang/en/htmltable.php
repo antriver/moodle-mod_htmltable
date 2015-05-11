@@ -6,7 +6,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// FIXME: This file should be mod_htmltable not just htmltable.
+
 $string['configdisplayoptions'] = 'Select all options that should be available, existing settings are not modified. Hold CTRL key to select multiple fields.';
+$string['configrequiremodintro'] = 'Disable this option if you do not want to force users to enter description of each activity.';
 $string['content'] = 'Table content';
 $string['contentheader'] = 'Content';
 $string['createhtmltable'] = 'Create a new table resource';
