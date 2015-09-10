@@ -1,13 +1,8 @@
-htmltable module
-=============
-Makes pretty tables
+# Moodle 'htmltable' Module
+Provides a simple interface for users to add a table displaying data to a course.
 
-
-Notes
--------------
+## Note
 FontAwesome is required to make the icons work.
 
-
-TODO
--------------
+## To Do 
 * Use language strings
