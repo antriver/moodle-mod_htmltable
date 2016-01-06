@@ -8,6 +8,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2015042600;       // The current module version (Date: YYYYMMDDXX)
-$module->requires  = 2013050100;    // Requires this Moodle version
-$module->component = 'mod_htmltable';       // Full name of the plugin (used for diagnostics)
+$plugin->version   = 2015042600;       // The current module version (Date: YYYYMMDDXX)
+$plugin->requires  = 2013050100;    // Requires this Moodle version
+$plugin->component = 'mod_htmltable';       // Full name of the plugin (used for diagnostics)
