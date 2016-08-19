@@ -144,9 +144,7 @@ function htmltable_add_instance($data, $mform = null) {
 function htmltable_update_instance($data, $mform) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
-
-    $cmid = $data->coursemodule;
-
+    
     $data->timemodified = time();
     $data->id = $data->instance;
     $data->revision++;
@@ -161,6 +159,9 @@ function htmltable_update_instance($data, $mform) {
     $data->displayoptions = serialize($displayoptions);
 
     $DB->update_record('htmltable', $data);
+
+    $cache = htmltable_get_cache();
+    $cache->delete('instance' . $data->id);
 
     return true;
 }
