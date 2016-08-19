@@ -32,20 +32,21 @@ class backup_htmltable_activity_task extends backup_activity_task {
      * Encodes URLs to the index.php and view.php scripts
      *
      * @param string $content some HTML text that eventually contains URLs to the activity instance scripts
+     *
      * @return string the content with the URLs encoded
      */
     static public function encode_content_links($content) {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot,"/");
+        $base = preg_quote($CFG->wwwroot, "/");
 
         // Link to the list of htmltables
-        $search="/(".$base."\/mod\/htmltable\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@TABLEINDEX*$2@$', $content);
+        $search = "/(" . $base . "\/mod\/htmltable\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@TABLEINDEX*$2@$', $content);
 
         // Link to htmltable view by moduleid
-        $search="/(".$base."\/mod\/htmltable\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@TABLEVIEWBYID*$2@$', $content);
+        $search = "/(" . $base . "\/mod\/htmltable\/view.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@TABLEVIEWBYID*$2@$', $content);
 
         return $content;
     }

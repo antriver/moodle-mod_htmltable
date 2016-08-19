@@ -9,27 +9,26 @@
  */
 
 require('../../config.php');
-require_once($CFG->dirroot.'/mod/htmltable/locallib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once($CFG->dirroot . '/mod/htmltable/locallib.php');
+require_once($CFG->libdir . '/completionlib.php');
 
-$id      = optional_param('id', 0, PARAM_INT); // Course Module ID
-$p       = optional_param('p', 0, PARAM_INT);  // htmltable instance ID
+$id = optional_param('id', 0, PARAM_INT); // Course Module ID
+$p = optional_param('p', 0, PARAM_INT);  // htmltable instance ID
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
-    if (!$page = $DB->get_record('htmltable', array('id'=>$p))) {
+    if (!$page = $DB->get_record('htmltable', array('id' => $p))) {
         print_error('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('htmltable', $page->id, $page->course, false, MUST_EXIST);
-
 } else {
     if (!$cm = get_coursemodule_from_id('htmltable', $id)) {
         print_error('invalidcoursemodule');
     }
-    $page = $DB->get_record('htmltable', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $page = $DB->get_record('htmltable', array('id' => $cm->instance), '*', MUST_EXIST);
 }
 
-$course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -46,16 +45,15 @@ $options = empty($page->displayoptions) ? array() : unserialize($page->displayop
 
 if ($inpopup and $page->display == RESOURCELIB_DISPLAY_POPUP) {
     $PAGE->set_pagelayout('popup');
-    $PAGE->set_title($course->shortname.': '.$page->name);
+    $PAGE->set_title($course->shortname . ': ' . $page->name);
     if (!empty($options['printheading'])) {
         $PAGE->set_heading($page->name);
     } else {
         $PAGE->set_heading('');
     }
     echo $OUTPUT->header();
-
 } else {
-    $PAGE->set_title($course->shortname.': '.$page->name);
+    $PAGE->set_title($course->shortname . ': ' . $page->name);
     $PAGE->set_heading($course->fullname);
     $PAGE->set_activity_record($page);
     echo $OUTPUT->header();
@@ -73,11 +71,11 @@ if (!empty($options['printintro'])) {
     }
 }
 
-	echo '<div class="generalbox">';
-		echo htmltable_display_table($page->content);
-	echo '</div>';
+echo '<div class="generalbox">';
+echo htmltable_display_table($page->content);
+echo '</div>';
 
 $strlastmodified = get_string("lastmodified");
-echo "<div class=\"modified\">$strlastmodified: ".userdate($page->timemodified)."</div>";
+echo "<div class=\"modified\">$strlastmodified: " . userdate($page->timemodified) . "</div>";
 
 echo $OUTPUT->footer();

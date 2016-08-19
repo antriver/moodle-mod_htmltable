@@ -10,14 +10,13 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/mod/htmltable/locallib.php');
-require_once($CFG->libdir.'/filelib.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/mod/htmltable/locallib.php');
+require_once($CFG->libdir . '/filelib.php');
 
 class mod_htmltable_mod_form extends moodleform_mod {
 
-    function definition()
-    {
+    function definition() {
         global $CFG, $DB, $PAGE;
 
         $PAGE->requires->css('/mod/htmltable/css/htmltable.css');
@@ -30,7 +29,7 @@ class mod_htmltable_mod_form extends moodleform_mod {
 
         //-------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        $mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
+        $mform->addElement('text', 'name', get_string('name'), array('size' => '48'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -69,15 +68,17 @@ class mod_htmltable_mod_form extends moodleform_mod {
             </table>
 EOT;
 
-        $mform->addElement('hidden', 'content' , '');
+        $mform->addElement('hidden', 'content', '');
         $mform->setType('content', PARAM_RAW);
 
-        $mform->addElement('hidden', 'contentformat' , '1');
+        $mform->addElement('hidden', 'contentformat', '1');
         $mform->setType('contentformat', PARAM_RAW);
 
-        $mform->addElement('html',$tableHTML);
+        $mform->addElement('html', $tableHTML);
 
-        $mform->addElement('html','
+        $mform->addElement(
+            'html',
+            '
         <br/>
         <div class="generalbox inset">
 
@@ -129,17 +130,15 @@ EOT;
         }
 
         //Change display options to user friendly labels
-        foreach ( $options as &$option )
-        {
-            switch ( $option )
-            {
+        foreach ($options as &$option) {
+            switch ($option) {
                 case 'Embed':
                     $option = 'Show on course page';
-                break;
+                    break;
 
                 case 'Open':
                     $option = 'Click to view';
-                break;
+                    break;
             }
         }
 
@@ -154,14 +153,14 @@ EOT;
         }
 
         if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $options)) {
-            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'htmltable'), array('size'=>3));
+            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'htmltable'), array('size' => 3));
             if (count($options) > 1) {
                 $mform->disabledIf('popupwidth', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
             $mform->setType('popupwidth', PARAM_INT);
             $mform->setDefault('popupwidth', $config->popupwidth);
 
-            $mform->addElement('text', 'popupheight', get_string('popupheight', 'htmltable'), array('size'=>3));
+            $mform->addElement('text', 'popupheight', get_string('popupheight', 'htmltable'), array('size' => 3));
             if (count($options) > 1) {
                 $mform->disabledIf('popupheight', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
@@ -176,8 +175,10 @@ EOT;
 
         // add legacy files flag only if used
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
-            $options = array(RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'htmltable'),
-                             RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'htmltable'));
+            $options = array(
+                RESOURCELIB_LEGACYFILES_DONE => get_string('legacyfilesdone', 'htmltable'),
+                RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'htmltable')
+            );
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'htmltable'), $options);
             $mform->setAdvanced('legacyfiles', 1);
         }
@@ -198,7 +199,14 @@ EOT;
         if ($this->current->instance) {
             $draftitemid = file_get_submitted_draft_itemid('htmltable');
             $default_values['htmltable']['format'] = $default_values['contentformat'];
-            $default_values['htmltable']['text']   = file_prepare_draft_area($draftitemid, $this->context->id, 'mod_htmltable', 'content', 0, htmltable_get_editor_options($this->context), $default_values['content']);
+            $default_values['htmltable']['text'] = file_prepare_draft_area(
+                $draftitemid,
+                $this->context->id,
+                'mod_htmltable',
+                'content',
+                0,
+                htmltable_get_editor_options($this->context),
+                $default_values['content']);
             $default_values['htmltable']['itemid'] = $draftitemid;
         }
         if (!empty($default_values['displayoptions'])) {

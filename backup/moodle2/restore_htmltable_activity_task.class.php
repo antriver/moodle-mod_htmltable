@@ -54,7 +54,6 @@ class restore_htmltable_activity_task extends restore_activity_task {
         $rules[] = new restore_decode_rule('TABLEINDEX', '/mod/htmltable/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**

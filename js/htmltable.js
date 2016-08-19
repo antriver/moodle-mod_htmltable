@@ -30,7 +30,7 @@ function htmltable_addheader() {
 function htmltable_addcol() {
     ++htmltable_cols;
 
-    $('#htmltable_edittable tr:not(".addrow")').each(function() {
+    $('#htmltable_edittable tr:not(".addrow")').each(function () {
         if ($(this).hasClass('header')) {
             $(this).children('th').last().before('<th>' + htmltable_removecol_button + htmltable_titleinput + '</th>');
         } else {
@@ -46,14 +46,14 @@ function htmltable_addcol() {
 function htmltable_addrow() {
     var tr = '<tr class="data">';
 
-        tr += '<td class="removecol"><a href="#" class="htmltable_removerow_button" title="Remove Row"><button><i class="fa fa-minus"></i></button></a></td>';
+    tr += '<td class="removecol"><a href="#" class="htmltable_removerow_button" title="Remove Row"><button><i class="fa fa-minus"></i></button></a></td>';
 
-        for (var i = 0; i < htmltable_cols; ++i) {
-            tr += '<td>' + htmltable_datainput + '</td>';
-        }
+    for (var i = 0; i < htmltable_cols; ++i) {
+        tr += '<td>' + htmltable_datainput + '</td>';
+    }
 
-        // Empty column for the "add column" button in the header
-        tr += '<td style="width:32px;">&nbsp;</td>';
+    // Empty column for the "add column" button in the header
+    tr += '<td style="width:32px;">&nbsp;</td>';
 
     tr += '</tr>';
 
@@ -66,16 +66,16 @@ $(document).on('click', '.htmltable_addcol_button', htmltable_addcol);
 $(document).on('click', '.htmltable_addrow_button', htmltable_addrow);
 
 // Remove row
-$(document).on('click', '.htmltable_removerow_button', function() {
+$(document).on('click', '.htmltable_removerow_button', function () {
     $(this).closest('tr').remove();
     return false;
 });
 
 // Remove column
-$(document).on('click', '.htmltable_removecol_button', function() {
+$(document).on('click', '.htmltable_removecol_button', function () {
     var index = $(this).closest('th').index() + 1;
 
-    $('#htmltable_edittable tr').each(function() {
+    $('#htmltable_edittable tr').each(function () {
         $(this).children('th:nth-child(' + index + '), td:nth-child(' + index + ')').remove();
     });
 
@@ -94,9 +94,9 @@ for (var i = 0; i < htmltable_initial_rows; ++i) {
 
 function htmltable_export() {
     var table = [];
-    $('#htmltable_edittable tr:not(.addrow)').each(function() {
+    $('#htmltable_edittable tr:not(.addrow)').each(function () {
         var row = [];
-        $(this).find('input').each(function() {
+        $(this).find('input').each(function () {
             row.push($(this).val());
         });
         table.push(row);
@@ -105,7 +105,7 @@ function htmltable_export() {
 }
 
 // When submitting the form, put the table data into a field
-$(document).on('submit', '#mform1', function() {
+$(document).on('submit', '#mform1', function () {
     var table = htmltable_export();
     table = JSON.stringify(table);
     $('input[name=content]').val(table);
@@ -113,10 +113,10 @@ $(document).on('submit', '#mform1', function() {
 
 // Populate table with existing content
 if (currentTable) {
-    $('#htmltable_edittable tr:not(.addrow)').each(function(rowNum) {
+    $('#htmltable_edittable tr:not(.addrow)').each(function (rowNum) {
         var row = currentTable[rowNum];
 
-        $(this).find('th input, td input').each(function(colNum) {
+        $(this).find('th input, td input').each(function (colNum) {
             $(this).val(row[colNum]);
         });
     });

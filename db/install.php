@@ -10,5 +10,4 @@ defined('MOODLE_INTERNAL') || die;
 
 function xmldb_htmltable_install() {
     global $CFG;
-
 }

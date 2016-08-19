@@ -23,10 +23,20 @@ class backup_htmltable_activity_structure_step extends backup_activity_structure
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $page = new backup_nested_element('htmltable', array('id'), array(
-            'name', 'intro', 'introformat', 'content', 'contentformat',
-            'legacyfiles', 'legacyfileslast', 'display', 'displayoptions',
-            'revision', 'timemodified'));
+        $page = new backup_nested_element(
+            'htmltable', array('id'), array(
+            'name',
+            'intro',
+            'introformat',
+            'content',
+            'contentformat',
+            'legacyfiles',
+            'legacyfileslast',
+            'display',
+            'displayoptions',
+            'revision',
+            'timemodified'
+        ));
 
         // Build the tree
         // (love this)
